@@ -7,7 +7,6 @@ import plotly.graph_objs as go
 import Utils
 
 
-
 def createScreenStatusTimeline(df):
     screenData = Utils.generateScreenStatusData(df)
     color_map = {'Screen On': 'blue', 'Screen Off': 'red'}
@@ -41,12 +40,14 @@ def createScreenStatusTimeline(df):
         width=1000,
         title_text='Event Timeline of Screen Status',
         title_font_size=16,
-        title_xanchor= 'left',
+        title_xanchor='left',
         xaxis=dict(showgrid=False, linecolor='black', linewidth=2, mirror=True),
         yaxis=dict(showgrid=False, linecolor='black', linewidth=2, mirror=True, title_text=''),
         font=dict(family="Arial, sans-serif", size=12, color="black"),
-        plot_bgcolor='white',
-        paper_bgcolor='white',
     )
 
-    return timelineFig, doughnutFig
+    # Calculate total time in 'Screen On' and 'Screen Off' states
+    total_screen_on_time = screenData.loc[screenData['ScreenStatusCat'] == 'Screen On', 'duration'].sum()
+    total_screen_off_time = screenData.loc[screenData['ScreenStatusCat'] == 'Screen Off', 'duration'].sum()
+
+    return timelineFig, doughnutFig, total_screen_on_time, total_screen_off_time
