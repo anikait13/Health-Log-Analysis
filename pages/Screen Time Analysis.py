@@ -35,7 +35,7 @@ else:
 
         # spinner for Loading UI
         with st.spinner(text='Gathering the best analytics'):
-            time.sleep(3)
+            time.sleep(1)
             st.success('Done')
 
         # Display charts
