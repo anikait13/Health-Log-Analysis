@@ -1,6 +1,14 @@
-import pandas
+import pandas as pd
 import matplotlib
 
+
+def load_data():
+    file_path = 'Dataset/HealthApp_2k.log_structured.csv'
+    df = pd.read_csv(file_path)
+    df['Time'] = pd.to_datetime(df['Time'], format='%Y%m%d-%H:%M:%S:%f')
+    df['Date'] = df['Time'].dt.date
+    df['Hour'] = pd.to_datetime(df['Time'], format='%Y%m%d-%H:%M:%S:%f').dt.hour
+    return df
 
 def generateScreenStatusData(data):
     data['statusChange'] = 0
@@ -19,4 +27,6 @@ def generateScreenStatusData(data):
     data['duration'] = (data['timeShifted'] - data['Time']).dt.total_seconds() /60
 
     return data
+
+
 

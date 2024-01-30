@@ -51,3 +51,7 @@ def createScreenStatusTimeline(df):
     total_screen_off_time = screenData.loc[screenData['ScreenStatusCat'] == 'Screen Off', 'duration'].sum()
 
     return timelineFig, doughnutFig, total_screen_on_time, total_screen_off_time
+
+def createStepcountCharts(df):
+    pass
+
