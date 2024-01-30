@@ -2,13 +2,16 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import plotly.express as px
-import Utils
 import plotly.graph_objs as go
 import Utils
 
 
-def createScreenStatusTimeline(df):
-    screenData = Utils.generateScreenStatusData(df)
+def createScreenStatusTimeline(df,date):
+    if date == 'All':
+        screenData = Utils.generateScreenStatusDataAll(df)
+    else:
+        screenData = Utils.generateScreenStatusData(df, date)
+
     color_map = {'Screen On': 'blue', 'Screen Off': 'red'}
     screenData['color'] = screenData['ScreenStatusCat'].map(color_map)
 
@@ -52,6 +55,49 @@ def createScreenStatusTimeline(df):
 
     return timelineFig, doughnutFig, total_screen_on_time, total_screen_off_time
 
-def createStepcountCharts(df):
-    pass
 
+def createStepcountCharts(df, date):
+    if date != 'all':
+        if 'df' in locals() and not df.empty:
+            step_events = df[df['EventId'] == 'E22'].copy()
+
+            step_events['StepCount'] = step_events['Content'].apply(Utils.extract_step_count)
+            step_events['Date'] = pd.to_datetime(step_events['Time']).dt.date
+            step_events['Hour12'] = pd.to_datetime(step_events['Time']).dt.strftime('%I %p')
+            step_events['Hour'] = pd.to_datetime(step_events['Time']).dt.hour
+
+            # Select a specific date for analysis
+            selected_date = date
+
+            # Calculate hourly step count as max - min for log data
+            hourly_step_count = (
+                step_events[step_events['Date'] == pd.to_datetime(selected_date).date()]
+                .groupby(['Hour12', 'Hour'])['StepCount']
+                .apply(lambda x: x.max() - x.min())
+                .reset_index(name='HourlyStepCount')
+            )
+
+            # Check if 'hourly_step_count' is not empty before plotting
+            if not hourly_step_count.empty:
+                # Create an interactive bar chart with Plotly Express
+                fig = px.bar(hourly_step_count, x='Hour12', y='HourlyStepCount',
+                             title=f'Hourly Step Count on {selected_date}',
+                             labels={'HourlyStepCount': 'Number of Steps'},
+                             color='HourlyStepCount',  # Color by step count for additional insight
+                             color_continuous_scale='blues')
+
+                # Customize the layout
+                fig.update_layout(
+                    xaxis=dict(title='Hour of the Day'),
+                    yaxis=dict(title='Number of Steps'),
+                    height=500,
+                    width=900
+                )
+
+                return fig
+            else:
+                print(f"No step count data available for {selected_date}.")
+                return None
+        else:
+            print("DataFrame 'df' is not defined or is empty.")
+            return None
