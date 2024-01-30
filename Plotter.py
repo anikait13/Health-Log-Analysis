@@ -122,25 +122,6 @@ def createStepcountCharts(df, date):
         return None
 
 
-import pandas as pd
-import plotly.graph_objects as go
-import plotly.express as px
-import Utils
-
-import pandas as pd
-import plotly.graph_objects as go
-import plotly.express as px
-import Utils
-
-import pandas as pd
-import plotly.graph_objects as go
-import plotly.express as px
-import Utils
-import pandas as pd
-import plotly.graph_objects as go
-import plotly.express as px
-import Utils
-
 def createStepcountCumCharts(df, date=None):
     if 'df' in locals() and not df.empty:
         step_events = df[df['EventId'] == 'E22'].copy()
@@ -187,6 +168,155 @@ def createStepcountCumCharts(df, date=None):
         else:
             print("Invalid date provided or 'all' specified. No plot generated.")
             return None
+    else:
+        print("DataFrame 'df' is not defined or is empty.")
+        return None
+
+
+def createCalorieCountCharts(df, date):
+    if 'df' in locals() and not df.empty:
+        calorie_events = df[df['EventId'] == 'E4'].copy()
+
+        calorie_events['Calories'] = calorie_events['Content'].apply(Utils.extract_calories)
+        calorie_events['Date'] = pd.to_datetime(calorie_events['Time']).dt.date
+        calorie_events['Hour12'] = pd.to_datetime(calorie_events['Time']).dt.strftime('%I %p')
+        calorie_events['Hour'] = pd.to_datetime(calorie_events['Time']).dt.hour
+
+        if date.lower() != 'all':
+            # Select a specific date for analysis
+            selected_date = date
+            # Calculate hourly calorie count as sum for 'E4' log data
+            hourly_calorie_count = (
+                calorie_events[calorie_events['Date'] == pd.to_datetime(selected_date).date()]
+                .groupby(['Hour12', 'Hour'])['Calories']
+                .apply(lambda x: x.max() - x.min())
+                .reset_index(name='HourlyCalorieCount')
+            )
+        else:
+            # For 'all' case, calculate hourly calorie count for all days
+            hourly_calorie_count = (
+                calorie_events
+                .groupby(['Hour12', 'Hour'])['Calories']
+                .apply(lambda x: x.max() - x.min())
+                .reset_index(name='HourlyCalorieCount')
+            )
+            selected_date = 'All'
+
+        # Check if 'hourly_calorie_count' is not empty before plotting
+        if not hourly_calorie_count.empty:
+            # Create an interactive bar chart with Plotly Express
+            if selected_date == 'All':
+                fig = px.bar(hourly_calorie_count, x='Hour12', y='HourlyCalorieCount',
+                             title=f'Hourly Calorie Count Overall',
+                             labels={'HourlyCalorieCount': 'Calories'},
+                             color='HourlyCalorieCount',  # Color by calorie count for additional insight
+                             color_continuous_scale='reds')
+            else:
+                fig = px.bar(hourly_calorie_count, x='Hour12', y='HourlyCalorieCount',
+                             title=f'Hourly Calorie Count on {selected_date}',
+                             labels={'HourlyCalorieCount': 'Calories'},
+                             color='HourlyCalorieCount',  # Color by calorie count for additional insight
+                             color_continuous_scale='reds')
+
+            # Customize the layout
+            fig.update_layout(
+                xaxis=dict(title='Hour of the Day'),
+                yaxis=dict(title='Calories'),
+                height=500,
+                width=900
+            )
+
+            return fig
+        else:
+            print(f"No calorie count data available for {selected_date}.")
+            return None
+    else:
+        print("DataFrame 'df' is not defined or is empty.")
+        return None
+
+
+def createCaloriesCumulativeChart(df, date=None):
+    if 'df' in locals() and not df.empty:
+        calorie_events = df[df['EventId'] == 'E4'].copy()
+
+        # Assuming 'extract_calories_from_e4' is a function that extracts calories from 'E4' event content
+        calorie_events['Calories'] = calorie_events['Content'].apply(Utils.extract_calories)
+
+        calorie_events['Date'] = pd.to_datetime(calorie_events['Time']).dt.date
+        calorie_events['Hour12'] = pd.to_datetime(calorie_events['Time']).dt.strftime('%I %p')
+
+        # Removing Bad entries
+        calorie_events = calorie_events.drop(
+            calorie_events[(calorie_events['LineId'] == 1791) | (calorie_events['LineId'] == 1796)].index)
+
+        if date and date.lower() != 'all':
+            # Select a specific date for analysis
+            selected_date = pd.to_datetime(date).date()
+
+            # Filter data for the selected date
+            selected_data = calorie_events[calorie_events['Date'] == selected_date].copy()
+
+            # Calculate cumulative calories over time and adjust by subtracting the minimum cumulative calories
+            cumulative_calories = selected_data.groupby('Time')['Calories'].cumsum()
+            cumulative_calories -= cumulative_calories.min()
+
+            # Create an interactive line chart with Plotly Express
+            fig = px.line(selected_data, x='Time', y=cumulative_calories,
+                          title=f'Cumulative Calories on {selected_date}',
+                          labels={'y': 'Cumulative Calories'},
+                          line_shape='linear',
+                          markers=True)
+
+            # Customize the layout
+            fig.update_layout(
+                xaxis=dict(title='Time'),
+                yaxis=dict(title='Cumulative Calories'),
+            )
+
+            return fig, cumulative_calories.max()
+        else:
+            print("Invalid date provided or 'all' specified. No plot generated.")
+            return None
+    else:
+        print("DataFrame 'df' is not defined or is empty.")
+        return None
+
+
+def createCaloriesCumulativeAllDaysChart(df):
+    if 'df' in locals() and not df.empty:
+        calorie_events = df[df['EventId'] == 'E4'].copy()
+
+        # Assuming 'extract_calories_from_e4' is a function that extracts calories from 'E4' event content
+        calorie_events['Calories'] = calorie_events['Content'].apply(Utils.extract_calories)
+
+        calorie_events['Date'] = pd.to_datetime(calorie_events['Time']).dt.date
+        calorie_events['Hour12'] = pd.to_datetime(calorie_events['Time']).dt.strftime('%I %p')
+
+        # Removing Bad entries
+        calorie_events = calorie_events.drop(
+            calorie_events[(calorie_events['LineId'] == 1791) | (calorie_events['LineId'] == 1796)].index)
+
+        # Calculate cumulative calories over time and adjust by subtracting the minimum cumulative calories
+        cumulative_calories = calorie_events.groupby('Time')['Calories'].cumsum()
+        cumulative_calories -= cumulative_calories.min()
+
+        # Create an interactive line chart with Plotly Express
+        fig = px.line(calorie_events, x='Time', y=cumulative_calories,
+                      title='Cumulative Calories for All Days',
+                      labels={'y': 'Cumulative Calories'},
+                      line_shape='linear',
+                      markers=True)
+
+        # Customize the layout
+        fig.update_layout(
+            xaxis=dict(title='Time'),
+            yaxis=dict(title='Cumulative Calories'),
+        )
+        # Find the day with the maximum cumulative calories
+        max_calories_day = calorie_events.loc[cumulative_calories.idxmax()]['Date']
+        max_calories_value = cumulative_calories.max()
+
+        return fig, max_calories_value, max_calories_day
     else:
         print("DataFrame 'df' is not defined or is empty.")
         return None

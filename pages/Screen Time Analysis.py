@@ -25,8 +25,8 @@ else:
         date = 'All'
 
     if date is not None:
-        timelineChart, doughnutChart, total_screen_on_time, total_screen_off_time = Plotter.createScreenStatusTimeline(df, date)
-
+        timelineChart, doughnutChart, total_screen_on_time, total_screen_off_time = Plotter.createScreenStatusTimeline(
+            df, date)
 
     if date is not None or date == 'All':
         # Print total time on and off
@@ -41,10 +41,3 @@ else:
         # Display charts
         st.plotly_chart(doughnutChart)
         st.plotly_chart(timelineChart)
-
-
-
-
-
-
-

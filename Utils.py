@@ -11,6 +11,7 @@ def load_data():
     df['Hour'] = pd.to_datetime(df['Time'], format='%Y%m%d-%H:%M:%S:%f').dt.hour
     return df
 
+
 def generateScreenStatusDataAll(data):
     data['statusChange'] = 0
 
@@ -25,9 +26,11 @@ def generateScreenStatusDataAll(data):
 
     data['timeShifted'] = data['Time'].shift(-1)
 
-    data['duration'] = (data['timeShifted'] - data['Time']).dt.total_seconds() /60
+    data['duration'] = (data['timeShifted'] - data['Time']).dt.total_seconds() / 60
 
     return data
+
+
 def generateScreenStatusData(data, date):
     data['statusChange'] = 0
 
@@ -60,3 +63,14 @@ def extract_step_count(content):
     except Exception as e:
         print(f"Error extracting step count: {e}")
         return None
+
+
+def extract_calories(content):
+    try:
+        # Find the substring after "totalCalories="
+        calories_str = content.split("totalCalories=")[-1].split(",")[0]
+        # Convert to float
+        calories = float(calories_str)
+        return calories
+    except (ValueError, IndexError):
+        return 0  # Return 0 if unable to extract calories
