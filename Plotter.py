@@ -33,7 +33,7 @@ def createScreenStatusTimeline(df):
     doughnutFig.update_layout(
         title_text='Screen On/Off Distribution',
         title_font_size=16,
-        showlegend=False,
+        showlegend=True,
     )
 
     # Update layout for timeline chart
