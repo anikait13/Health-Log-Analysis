@@ -20,7 +20,7 @@ elif date == "23 December 2017":
     hourly_steps = Plotter.createStepcountCharts(df, date='2017-12-23')
     cum_steps, max_steps = Plotter.createCaloriesCumulativeChart(df, date='2017-12-23')
 elif date == "24 December 2017":
-    hourly_steps = Plotter.createcaloriescountCharts(df, date='2017-12-24')
+    hourly_steps = Plotter.createStepcountCharts(df, date='2017-12-24')
     cum_steps, max_steps = Plotter.createCaloriesCumulativeChart(df, date='2017-12-24')
 
 elif date == "All":
