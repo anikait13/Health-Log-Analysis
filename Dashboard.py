@@ -15,8 +15,11 @@ selected_page = st.selectbox('Select Analysis Type', types)
 if selected_page == 'Screen Time 📲':
     switch_page("screen time analysis")
 
+st.write()
+st.write()
 
-st.write("Important Notes")
-st.markdown("Some Necessary assumptions were made while calculating the analytics")
-st.markdown("All graphics are intractable and can be explored further using")
-st.markdown("- Item 3")
+
+st.subheader("Important Notes 📌")
+st.markdown("- Certain necessary assumptions were considered during the calculation of analytics.")
+st.markdown("- All graphs and charts are interactive, allowing for further exploration.")
+st.markdown("- Source Code is seen by clicking the Github logo on the top-right ↗️. ")
