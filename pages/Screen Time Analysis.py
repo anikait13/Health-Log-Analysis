@@ -19,7 +19,7 @@ st.markdown("Analysis of the time person spent with Screen ON or OFF")
 # loading df from csv file
 df = Utils.load_data()
 
-types = ('--None--', '23 December 2017', '24 December 2017', 'All')
+types = ('Click here to select date', '23 December 2017', '24 December 2017', 'All')
 selected_date = st.selectbox('Select Date for Analysis', types)
 
 if selected_date == "--None--":

@@ -17,7 +17,7 @@ st.markdown("Analysis of the calories burnt by the person")
 
 # loading df from csv file
 df = Utils.load_data()
-types = ('--None--', '23 December 2017', '24 December 2017', 'All')
+types = ('Click here to select date', '23 December 2017', '24 December 2017', 'All')
 date = st.selectbox('Select Date for Analysis', types)
 
 hourly_calories = None
