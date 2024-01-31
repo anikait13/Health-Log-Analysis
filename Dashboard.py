@@ -27,7 +27,3 @@ st.markdown("- Certain necessary assumptions were considered during the calculat
 st.markdown("- All graphs and charts are interactive, allowing for further exploration.")
 st.markdown("- Source Code is seen by clicking the Github logo on the top-right ↗️. ")
 
-st.warning("The repository was plagarized by others as it was set to public for deployment.")
-st.write("Repository is set to private now. Source code will be sent as a .zip file")
-st.image("images/Clones.png")
-
