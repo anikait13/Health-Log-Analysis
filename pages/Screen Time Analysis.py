@@ -14,6 +14,8 @@ with col6:
     if st.button("Dashboard"):
         switch_page("dashboard")
 
+st.markdown("Analysis of the time person spent with Screen ON or OFF")
+
 # loading df from csv file
 df = Utils.load_data()
 

@@ -27,7 +27,8 @@ st.subheader("Important Notes 📌")
 st.markdown("- Certain necessary assumptions were considered during the calculation of analytics.")
 st.markdown("- All graphs and charts are interactive, allowing for further exploration.")
 st.markdown("- Source Code is seen by clicking the Github logo on the top-right ↗️. ")
-st.markdown("The repository was plagarized by others as it was set to public for deployment.For more information Click Here:")
+st.markdown("The repository was plagarized by others as it was set to public for deployment.For more information "
+            "Click Here:")
 
 col1, col2, col3, col4, col5, col6 = st.columns([1, 1, 1, 1, 1, 1])
 with col6:

@@ -74,3 +74,14 @@ def extract_calories(content):
         return calories
     except (ValueError, IndexError):
         return 0  # Return 0 if unable to extract calories
+
+
+def extract_stand_count(content):
+    try:
+        # Find the substring after "onStandStepChanged "
+        stand_count_str = content.split("onStandStepChanged ")[-1]
+        # Convert to integer
+        stand_count = int(stand_count_str)
+        return stand_count
+    except (ValueError, IndexError):
+        return 0  # Return 0 if unable to extract stand count

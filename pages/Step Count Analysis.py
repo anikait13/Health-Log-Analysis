@@ -13,6 +13,8 @@ with col6:
     if st.button("Dashboard"):
         switch_page("dashboard")
 
+st.markdown("Analysis of how many steps a person walked 🚶🏻‍")
+
 
 # loading df from csv file
 df = Utils.load_data()

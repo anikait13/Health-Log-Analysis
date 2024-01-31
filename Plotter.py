@@ -320,3 +320,68 @@ def createCaloriesCumulativeAllDaysChart(df):
     else:
         print("DataFrame 'df' is not defined or is empty.")
         return None
+def createStandcountCharts(df, date):
+    if 'df' in locals() and not df.empty:
+        stand_events = df[df['EventId'] == 'E42'].copy()
+
+        stand_events['StandCount'] = stand_events['Content'].apply(Utils.extract_stand_count)
+        stand_events['Date'] = pd.to_datetime(stand_events['Time']).dt.date
+        stand_events['Hour12'] = pd.to_datetime(stand_events['Time']).dt.strftime('%I %p')
+        stand_events['Hour'] = pd.to_datetime(stand_events['Time']).dt.hour
+
+        # Removing Bad entries
+        stand_events = stand_events.drop(
+            stand_events[(stand_events['LineId'] == 3579)].index)
+
+        if date.lower() != 'all':
+            # Select a specific date for analysis
+            selected_date = date
+            # Calculate hourly stand count as max - min for log data
+            hourly_stand_count = (
+                stand_events[stand_events['Date'] == pd.to_datetime(selected_date).date()]
+                .groupby(['Hour12', 'Hour'])['StandCount']
+                .apply(lambda x: x.max() - x.min())
+                .reset_index(name='HourlyStandCount')
+            )
+        else:
+            # For 'all' case, calculate hourly stand count for all days
+            hourly_stand_count = (
+                stand_events
+                .groupby(['Hour12', 'Hour'])['StandCount']
+                .apply(lambda x: x.max() - x.min())
+                .reset_index(name='HourlyStandCount')
+            )
+            selected_date = 'All'
+
+        # Check if 'hourly_stand_count' is not empty before plotting
+        if not hourly_stand_count.empty:
+            # Create an interactive bar chart with Plotly Express
+            if selected_date == 'All':
+                fig = px.bar(hourly_stand_count, x='Hour12', y='HourlyStandCount',
+                             title=f'Hourly Stand Count Overall',
+                             labels={'HourlyStandCount': 'Number of Stand Steps'},
+                             color='HourlyStandCount',  # Color by stand count for additional insight
+                             color_continuous_scale='greens')
+            else:
+                fig = px.bar(hourly_stand_count, x='Hour12', y='HourlyStandCount',
+                             title=f'Hourly Stand Count on {selected_date}',
+                             labels={'HourlyStandCount': 'Number of Stand Steps'},
+                             color='HourlyStandCount',  # Color by stand count for additional insight
+                             color_continuous_scale='greens')
+
+            # Customize the layout
+            fig.update_layout(
+                xaxis=dict(title='Hour of the Day'),
+                yaxis=dict(title='Number of Stand Steps'),
+                height=500,
+                width=900
+            )
+
+            return fig
+        else:
+            print(f"No stand count data available for {selected_date}.")
+            return None
+    else:
+        print("DataFrame 'df' is not defined or is empty.")
+        return None
+

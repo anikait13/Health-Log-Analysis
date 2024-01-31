@@ -13,6 +13,8 @@ with col6:
     if st.button("Dashboard"):
         switch_page("dashboard")
 
+st.markdown("Analysis of the calories burnt by the person")
+
 # loading df from csv file
 df = Utils.load_data()
 types = ('--None--', '23 December 2017', '24 December 2017', 'All')
