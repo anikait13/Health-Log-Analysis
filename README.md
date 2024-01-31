@@ -10,6 +10,7 @@ https://healthlog.streamlit.app/
 - **Screen Time Analysis 📲:** Explore insights into screen time usage.
 - **Calories Burnt Analysis 🏋🏻:** Analyze calories burnt during different activities.
 - **Step Count Analysis 🏃:** Understand step count patterns.
+- **Stand Count Analysis 🧍‍:** Understand stand count patterns.
 
 ## Getting Started
 1. Clone the repository:
