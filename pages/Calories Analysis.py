@@ -28,13 +28,14 @@ elif date == "All":
     cum_calories, max_calories, max_calories_day = Plotter.createCaloriesCumulativeAllDaysChart(df)
 
 if hourly_calories:
-    with st.spinner(text='Gathering the best analytics'):
-        time.sleep(1)
-        st.success('Done')
     if date != 'All':
         st.write("Total Number of Calories on ", date, "was ", max_calories, " calories.")
     else:
         st.write("Maximum number of Calories of ", max_calories, "was burnt on ", max_calories_day, " .")
+
+    with st.spinner(text='Gathering the best analytics'):
+        time.sleep(3)
+        st.success('Done')
 
     st.plotly_chart(hourly_calories)
     st.plotly_chart(cum_calories)
