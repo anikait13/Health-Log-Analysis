@@ -2,9 +2,17 @@ import streamlit as st
 import time
 import Plotter
 import Utils
+from streamlit_extras.switch_page_button import switch_page
+
 
 # title of page
 st.title("Screen Time Analysis 📲")
+
+# Adding back to Dashboard button
+col1, col2, col3, col4, col5, col6 = st.columns([1, 1, 1, 1, 1, 1])
+with col6:
+    if st.button("Dashboard"):
+        switch_page("dashboard")
 
 # loading df from csv file
 df = Utils.load_data()
